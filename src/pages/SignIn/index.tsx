@@ -17,7 +17,8 @@ interface signInFormData{
 }
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const { name, signIn } = useContext(AuthContext);
+  const { user, signIn } = useContext(AuthContext);
+  console.log(user);
   const handleSubmit = useCallback(async (data: signInFormData) => {
     try {
       const schema = Yup.object().shape({
