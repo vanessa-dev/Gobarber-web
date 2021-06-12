@@ -4,7 +4,8 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 import getValidationsErrors from '../../utils/getValidationsErrors';
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
@@ -18,6 +19,7 @@ interface signInFormData{
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(async (data: signInFormData) => {
     try {
@@ -30,15 +32,17 @@ const SignIn: React.FC = () => {
         abortEarly: false,
       });
 
-      signIn({ email: data.email, password: data.password });
+      await signIn({ email: data.email, password: data.password });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
         formRef.current?.setErrors(errors);
       }
-      // disparar um toast
+
+      addToast();
     }
-  }, []);
+  }, [signIn, addToast]);
+
   return (
     <Container>
       <Content>
